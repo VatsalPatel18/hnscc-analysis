@@ -1,0 +1,51 @@
+Analysis started at 2025-06-17 02:16:26.364076
+Main output directory: hnscc_robust_analysis_output
+TCGA Expression: /Users/vatsal1/Documents/github/hnscc-analysis/data/tcga.survival.fcptac.csv
+TCGA Survival: /Users/vatsal1/Documents/github/hnscc-analysis/data/survival_tcga.csv
+CPTAC Expression: /Users/vatsal1/Documents/github/hnscc-analysis/data/cptac.survival.fcptac.csv
+CPTAC Survival: /Users/vatsal1/Documents/github/hnscc-analysis/data/survival_cptac.csv
+Clustering K range: [2, 3, 4, 5, 6, 7, 8, 9, 10]
+Classification Feature Sizes: [2, 5, 8, 10, 12, 15]
+Number of classification runs: 100
+Significance Thresholds: TCGA P<0.05, CPTAC P<0.05 (Strict), CPTAC P<0.1 (Relaxed)
+
+TCGA Data Loaded & Aligned:
+  Expression: 415 patients, 517 features
+  Survival: 415 patients
+  Saved plot: hnscc_robust_analysis_output/plots/clustering/tcga_best_kmeans_k8_km_plot.png
+
+Best Initial Clustering (TCGA, Full Features):
+  Method: kmeans, k: 8, Min p: 0.001457
+  Saved assignments: hnscc_robust_analysis_output/data/tcga_best_clusters_full_features.csv
+  Saved model: hnscc_robust_analysis_output/models/clustering/best_clustering_model.pkl
+
+Binary Classification Data Preparation:
+  Selected clusters: [5, 6]
+  Subset size: 160 patients, 517 features
+  Label distribution (%): {0: np.float64(56.9), 1: np.float64(43.1)}
+  Saved binary target viz: hnscc_robust_analysis_output/plots/classification_performance/binary_target_groups.png
+
+Binary Classification Loop Completed:
+  Saved detailed metrics: hnscc_robust_analysis_output/results/classification_metrics_all_runs.csv
+  Saved ROC data: hnscc_robust_analysis_output/results/roc_data_all_runs.pkl
+  Saved models/selectors in: hnscc_robust_analysis_output/models/classification
+  Saved selected features in: hnscc_robust_analysis_output/results/feature_selection
+  Saved ROC curve plot: hnscc_robust_analysis_output/plots/classification_performance/roc_curves_by_model.png
+
+Classification Visualization Completed:
+  Saved aggregated metrics: hnscc_robust_analysis_output/results/classification_metrics_aggregated.csv
+  Saved AUC boxplots: hnscc_robust_analysis_output/plots/classification_performance/auc_boxplots_by_model.png
+  Saved Mean AUC line plot: hnscc_robust_analysis_output/plots/classification_performance/auc_mean_std_lines_by_model.png
+  Saved ROC curve plot: hnscc_robust_analysis_output/plots/classification_performance/roc_curves_by_model.png
+  Overall Best Combo (Mean AUC only): Model=RandomForest, FSize=15, AUC=0.9985
+
+CPTAC Data Loaded & Aligned: Expr=(102, 517), Surv=(102, 2)
+
+Validation and Summary Generation Completed:
+  Saved prediction files in: hnscc_robust_analysis_output/results/predictions
+  Saved summary table: hnscc_robust_analysis_output/results/performance_summary_table.csv
+
+Summary Table:
+Empty DataFrame
+Columns: []
+Index: []

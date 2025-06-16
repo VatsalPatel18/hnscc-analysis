@@ -5,8 +5,15 @@ import numpy as np
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
-from lifelines import KaplanMeierFitter
-from lifelines.statistics import logrank_test
+import sys
+
+# Ensure lifelines is installed
+try:
+    from lifelines import KaplanMeierFitter
+    from lifelines.statistics import logrank_test
+except ImportError:
+    print("ERROR: lifelines library is required. Install via 'pip install lifelines'.")
+    sys.exit(1)
 from itertools import combinations
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import SelectKBest, f_classif

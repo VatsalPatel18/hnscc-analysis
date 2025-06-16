@@ -10,7 +10,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from upsetplot import UpSet, from_memberships
+try:
+    from upsetplot import UpSet, from_memberships
+    upsetplot_available = True
+except ImportError:
+    print("WARNING: upsetplot not installed, skipping UpSet plots.")
+    upsetplot_available = False
 
 from step0_setup import DIRS, FEATURE_SIZES, CLASSIFIERS, LOG_FILE
 
@@ -145,6 +150,9 @@ def load_best_feature_sets():
 # ---------------------------------------------------------------------------
 
 def plot_upset(feature_sets, out_file):
+    if not upsetplot_available:
+        print("Skipping UpSet plot (upsetplot not available).")
+        return
     if not feature_sets:
         print("No feature sets provided for UpSet plot.")
         return

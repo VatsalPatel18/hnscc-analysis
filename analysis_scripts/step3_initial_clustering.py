@@ -8,8 +8,61 @@ import pandas as pd
 from step0_setup import DIRS, CLUSTERING_METHODS, K_RANGE, LOG_FILE
 from step1_load_tcga import df_expr_tcga, df_surv_tcga
 from step2_helper_functions import cluster_and_evaluate, run_multi_group_survival
+# For comprehensive clustering metrics
+from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bouldin_score
+from sklearn.cluster import KMeans, AgglomerativeClustering
+from sklearn.mixture import GaussianMixture
+import matplotlib.pyplot as plt
 
-print("\n--- 3. Starting Initial Clustering Analysis (TCGA, All Features) ---")
+print("\n--- 3a. Full Clustering Evaluation Metrics (Silhouette, CH, DB, Inertia) ---")
+full_results = []
+for method in CLUSTERING_METHODS:
+    for k in K_RANGE:
+        try:
+            # instantiate clustering model
+            if method.lower() == 'kmeans':
+                model = KMeans(n_clusters=k, random_state=42, n_init=10)
+            elif method.lower() == 'agglomerative':
+                model = AgglomerativeClustering(n_clusters=k, linkage='ward')
+            elif method.lower() == 'gmm':
+                model = GaussianMixture(n_components=k, random_state=42, n_init=5)
+            else:
+                continue
+            labels = model.fit_predict(df_expr_tcga.values)
+            # compute ML metrics
+            if len(set(labels)) > 1:
+                sil = silhouette_score(df_expr_tcga.values, labels)
+                ch = calinski_harabasz_score(df_expr_tcga.values, labels)
+                db = davies_bouldin_score(df_expr_tcga.values, labels)
+            else:
+                sil = ch = db = float('nan')
+            inertia = model.inertia_ if hasattr(model, 'inertia_') else float('nan')
+            full_results.append({
+                'Method': method, 'k': k,
+                'Silhouette': sil, 'CalinskiHarabasz': ch,
+                'DaviesBouldin': db, 'Inertia': inertia
+            })
+            print(f"    {method} k={k}: Silhouette={sil:.3f}, CH={ch:.3f}, DB={db:.3f}, Inertia={inertia:.3f}")
+        except Exception as e:
+            print(f"    Error computing metrics for {method} k={k}: {e}")
+
+df_full = pd.DataFrame(full_results)
+full_file = os.path.join(DIRS['results'], 'full_clustering_evaluation.csv')
+df_full.to_csv(full_file, index=False)
+print(f"Saved full clustering evaluation metrics to: {full_file}")
+try:
+    fig, ax = plt.subplots()
+    df_km = df_full[df_full['Method'].str.lower()=='kmeans']
+    ax.plot(df_km['k'], df_km['Inertia'], marker='o')
+    ax.set_title('KMeans Inertia vs k')
+    ax.set_xlabel('k'); ax.set_ylabel('Inertia'); ax.grid(True)
+    elbow_plot = os.path.join(DIRS['plots_clustering'], 'kmeans_elbow.png')
+    fig.savefig(elbow_plot, bbox_inches='tight', dpi=150)
+    print(f"Saved KMeans elbow plot to: {elbow_plot}")
+except Exception as e:
+    print(f"Error plotting KMeans elbow: {e}")
+
+print("\n--- 3b. Starting Initial Clustering Analysis (TCGA, All Features) ---")
 clustering_results = []
 best_model_info = {
     "method": None,
