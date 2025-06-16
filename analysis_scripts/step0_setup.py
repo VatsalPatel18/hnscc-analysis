@@ -32,10 +32,14 @@ warnings.filterwarnings('ignore', category=FutureWarning)
 warnings.filterwarnings('ignore', category=UserWarning)
 warnings.filterwarnings('ignore', category=ConvergenceWarning)
 
-TCGA_EXPRESSION_FILE = "/content/Case-Study-HNSCC-ML-Copilot-Agent/processed_data/tcga.survival.fcptac.csv"
-TCGA_SURVIVAL_FILE = "/content/Case-Study-HNSCC-ML-Copilot-Agent/processed_data/survival_tcga.csv"
-CPTAC_EXPRESSION_FILE = "/content/Case-Study-HNSCC-ML-Copilot-Agent/processed_data/cptac.survival.fcptac.csv"
-CPTAC_SURVIVAL_FILE = "/content/Case-Study-HNSCC-ML-Copilot-Agent/processed_data/survival_cptac.csv"
+SCRIPT_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, os.pardir))
+DATA_DIR = os.path.join(BASE_DIR, "data")
+
+TCGA_EXPRESSION_FILE = os.path.join(DATA_DIR, "tcga.survival.fcptac.csv")
+TCGA_SURVIVAL_FILE = os.path.join(DATA_DIR, "survival_tcga.csv")
+CPTAC_EXPRESSION_FILE = os.path.join(DATA_DIR, "cptac.survival.fcptac.csv")
+CPTAC_SURVIVAL_FILE = os.path.join(DATA_DIR, "survival_cptac.csv")
 
 MAIN_OUTPUT_DIR = "hnscc_robust_analysis_output"
 os.makedirs(MAIN_OUTPUT_DIR, exist_ok=True)

@@ -10,6 +10,10 @@ from step0_setup import DIRS, CPTAC_EXPRESSION_FILE, CPTAC_SURVIVAL_FILE, P_VALU
 from step1_load_tcga import df_expr_tcga, df_surv_tcga, required_survival_cols
 from step6_aggregate_visualize import df_agg, results_df
 
+# Directory for raw prediction outputs (outside project)
+DOWNLOAD_PRED_DIR = os.path.expanduser(os.path.join('~', 'Downloads', 'new_folder'))
+os.makedirs(DOWNLOAD_PRED_DIR, exist_ok=True)
+
 print("\n--- 7. Starting Validation on Full Datasets and Summary Table Generation ---")
 
 df_expr_cptac = None
@@ -95,6 +99,12 @@ for fsize in df_agg["FeatureSize"].unique():
         df_tcga_preds = pd.DataFrame({'PredictedLabel': tcga_pred_labels, 'PredictedProbability_Class1': tcga_pred_probas}, index=df_expr_tcga.index)
         pred_file_tcga = os.path.join(DIRS["results_predictions"], f"tcga_full_predictions_f{fsize}_model_{best_model_fsize}_run{best_run_fsize}.csv")
         df_tcga_preds.to_csv(pred_file_tcga)
+        # Also save raw TCGA predictions to user downloads folder
+        raw_file_tcga = os.path.join(DOWNLOAD_PRED_DIR, os.path.basename(pred_file_tcga))
+        df_tcga_preds.to_csv(raw_file_tcga)
+        print(f"Saved raw TCGA predictions to: {raw_file_tcga}")
+        with open(LOG_FILE, "a") as f:
+            f.write(f"  Raw TCGA predictions saved to: {raw_file_tcga}\n")
 
         df_surv_tcga_pred = df_surv_tcga.loc[df_expr_tcga.index].copy()
         df_surv_tcga_pred["Classifier_Group"] = tcga_pred_labels
@@ -128,6 +138,12 @@ for fsize in df_agg["FeatureSize"].unique():
             df_cptac_preds = pd.DataFrame({'PredictedLabel': cptac_pred_labels, 'PredictedProbability_Class1': cptac_pred_probas}, index=df_expr_cptac.index)
             pred_file_cptac = os.path.join(DIRS["results_predictions"], f"cptac_predictions_f{fsize}_model_{best_model_fsize}_run{best_run_fsize}.csv")
             df_cptac_preds.to_csv(pred_file_cptac)
+            # Also save raw CPTAC predictions to user downloads folder
+            raw_file_cptac = os.path.join(DOWNLOAD_PRED_DIR, os.path.basename(pred_file_cptac))
+            df_cptac_preds.to_csv(raw_file_cptac)
+            print(f"Saved raw CPTAC predictions to: {raw_file_cptac}")
+            with open(LOG_FILE, "a") as f:
+                f.write(f"  Raw CPTAC predictions saved to: {raw_file_cptac}\n")
 
             df_surv_cptac_pred = df_surv_cptac.loc[df_expr_cptac.index].copy()
             df_surv_cptac_pred["Classifier_Group"] = cptac_pred_labels
