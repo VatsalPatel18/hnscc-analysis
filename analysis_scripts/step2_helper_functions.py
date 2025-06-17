@@ -89,10 +89,7 @@ def run_multi_group_survival(df_survival_with_clusters, cluster_col="Cluster",
         except Exception as e:
             print(f"Error saving plot {plot_filename}: {e}")
 
-    if show_plot:
-        plt.show()
-    else:
-        plt.close(fig)
+    plt.close(fig)
 
     return min_p, cluster_distribution, signif_text, medians
 
@@ -199,6 +196,6 @@ def plot_roc_curves_all_models(roc_storage, models_to_plot, feature_sizes,
             f.write(f"  Saved ROC curve plot: {output_file}\n")
     except Exception as e:
         print(f"Error saving ROC plot {output_file}: {e}")
-    plt.show()
+    plt.close()
 
 print("Helper functions defined.")

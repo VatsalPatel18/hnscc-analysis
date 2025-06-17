@@ -94,4 +94,4 @@ plt.savefig(vis_path, bbox_inches='tight', dpi=150)
 print(f"Saved binary target visualization to: {vis_path}")
 with open(LOG_FILE, 'a') as f:
     f.write(f"  Saved binary target viz: {vis_path}\n")
-plt.show()
+plt.close()

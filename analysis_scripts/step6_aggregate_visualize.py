@@ -55,7 +55,7 @@ plt.tight_layout(rect=[0, 0.03, 1, 0.98])
 boxplot_file = os.path.join(DIRS["plots_classification"], "auc_boxplots_by_model.png")
 plt.savefig(boxplot_file, bbox_inches="tight", dpi=150)
 print(f"Saved AUC boxplots to: {boxplot_file}")
-plt.show()
+plt.close()
 
 print("Generating Mean AUC line plots...")
 plt.figure(figsize=(10, 7))
@@ -97,7 +97,7 @@ plt.xticks(FEATURE_SIZES, labels=[str(fs) for fs in FEATURE_SIZES], rotation=45,
 lineplot_file = os.path.join(DIRS["plots_classification"], "auc_mean_std_lines_by_model.png")
 plt.savefig(lineplot_file, bbox_inches="tight", dpi=150)
 print(f"Saved Mean AUC line plot to: {lineplot_file}")
-plt.show()
+plt.close()
 
 print("Generating ROC plots...")
 roc_plot_file = os.path.join(DIRS["plots_classification"], "roc_curves_by_model.png")
