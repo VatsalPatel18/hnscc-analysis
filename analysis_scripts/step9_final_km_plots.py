@@ -11,13 +11,34 @@ import pickle
 
 import pandas as pd
 
-from step0_setup import DIRS, LOG_FILE
+from step0_setup import (
+    DIRS,
+    LOG_FILE,
+    CPTAC_EXPRESSION_FILE,
+    CPTAC_SURVIVAL_FILE,
+)
 from step1_load_tcga import df_expr_tcga, df_surv_tcga
 from step2_helper_functions import run_multi_group_survival
 
-try:  # CPTAC data are optional
-    from step7_validation_summary import df_expr_cptac, df_surv_cptac, common_features
-except Exception:  # pragma: no cover - used when step7 was not executed
+df_expr_cptac = None
+df_surv_cptac = None
+common_features = None
+
+try:  # CPTAC data are optional and may not exist
+    if os.path.exists(CPTAC_EXPRESSION_FILE) and os.path.exists(CPTAC_SURVIVAL_FILE):
+        df_expr_cptac = pd.read_csv(CPTAC_EXPRESSION_FILE, index_col="PatientID")
+        df_surv_cptac = pd.read_csv(CPTAC_SURVIVAL_FILE, index_col="PatientID")
+        common_features = df_expr_tcga.columns.intersection(df_expr_cptac.columns)
+        if len(common_features) > 0:
+            df_expr_cptac = df_expr_cptac[common_features]
+            df_surv_cptac = df_surv_cptac.loc[df_expr_cptac.index]
+        else:
+            common_features = None
+    else:
+        df_expr_cptac = None
+        df_surv_cptac = None
+        common_features = None
+except Exception:  # pragma: no cover - runtime path when CPTAC loading fails
     df_expr_cptac = None
     df_surv_cptac = None
     common_features = None

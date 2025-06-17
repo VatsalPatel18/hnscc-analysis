@@ -9,7 +9,17 @@ from lifelines.statistics import logrank_test
 
 from step0_setup import DIRS, CPTAC_EXPRESSION_FILE, CPTAC_SURVIVAL_FILE, P_VALUE_THRESHOLD_TCGA, P_VALUE_THRESHOLD_CPTAC, P_VALUE_THRESHOLD_CPTAC_RELAXED, LOG_FILE
 from step1_load_tcga import df_expr_tcga, df_surv_tcga, required_survival_cols
-from step6_aggregate_visualize import df_agg, results_df
+
+results_csv = os.path.join(DIRS["results"], "classification_metrics_all_runs.csv")
+agg_results_csv = os.path.join(DIRS["results"], "classification_metrics_aggregated.csv")
+
+if not os.path.exists(results_csv) or not os.path.exists(agg_results_csv):
+    raise RuntimeError(
+        "Required result files not found. Run previous steps before validation."
+    )
+
+results_df = pd.read_csv(results_csv)
+df_agg = pd.read_csv(agg_results_csv)
 
 # Directory for raw prediction outputs (outside project)
 DOWNLOAD_PRED_DIR = os.path.expanduser(os.path.join('~', 'Downloads', 'new_folder'))
