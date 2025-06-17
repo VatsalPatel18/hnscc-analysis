@@ -1,0 +1,85 @@
+@startuml HNSCC_Workflow_Detailed
+title ML Copilot-Driven HNSCC Prognostic Workflow (Detailed)
+
+start
+
+:0. Setup & Configuration;
+note right
+  - Define file paths (TCGA/CPTAC)
+  - K_RANGE = 2 to 10
+  - CLUSTERING_METHODS = [KMeans, Agglomerative, GMM]
+  - FEATURE_SIZES = [2, 5, 8, 10, 12, 15, ...]
+  - RUNS = 100
+  - P-value thresholds (TCGA & CPTAC)
+end note
+
+:1. Load & Align Data;
+note right
+  - Read TCGA expr & surv
+  - Subset to common PatientIDs
+  - Save aligned CSVs
+end note
+
+partition "2. Initial Unsupervised Clustering & Evaluation" {
+  :For each method in [KMeans, Agglomerative, GMM];
+  while (k = 2 to 10)
+    :Cluster TCGA (all genes) with method, k;
+    :Compute KM curves & pairwise log-rank;
+    :Capture min p-value for this (method, k);
+  end while
+  :Select best (method*, k*) with lowest p-value;
+  note right
+    Save best cluster labels & model
+  end note
+}
+
+:3. Define Binary Labels;
+note right
+  - Take the two largest clusters from step 2
+  - Map to labels {0, 1}
+  - Subset expression & survival for these samples
+end note
+
+partition "4. Binary Classification (TCGA-only Train/Test)" {
+  :For each fsize in FEATURE_SIZES;
+  while (run = 1 to RUNS)
+    :Train/Test split TCGA subset (30% test);
+    :SelectKBest(fsize) on train;
+    :Train classifiers [LR, RF, SVM, KNN, GBM];
+    :Evaluate Acc, Prec, Rec, F1, AUC & ROC;
+    :Save model, selector & features;
+  end while
+}
+
+:5. Aggregate Performance;
+note right
+  - Compute mean ± std AUC per (model, fsize)
+  - Save aggregated CSV
+end note
+
+partition "6. Cross-Cohort Validation & Model Selection" {
+  :For each fsize in FEATURE_SIZES;
+  :Pick model* with highest mean AUC;
+  :Load model* & its features;
+  :Predict full TCGA -> log-rank (p_TCGA);
+  :Predict CPTAC -> log-rank (p_CPTAC);
+  :Record (model*, fsize, p_TCGA, p_CPTAC);
+  :Apply strict -> relaxed -> fallback criteria;
+  :Select overall best model & run;
+}
+
+:7. Generate Final KM Plots;
+note right
+  - Plot KM for full TCGA with best model
+  - Plot KM for CPTAC with same features
+end note
+
+:8. Re-Clustering on TCGA with Selected Features;
+note right
+  - Cluster TCGA (method*, k*) using only best features
+  - Evaluate survival separation & compare p-values
+end note
+
+stop
+
+@enduml
