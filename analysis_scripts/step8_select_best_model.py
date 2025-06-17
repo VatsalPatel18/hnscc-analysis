@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Step 8: Select overall best model based on combined criteria."""
+"""Step 8: Select overall best model based on combined criteria.
+
+In addition to writing the best configuration to disk, this script exposes
+``selected_features_final_combined``
+containing the feature list from that configuration.  Step 10 imports this
+variable when re-clustering using only those genes.
+"""
 
 import os
 import pandas as pd
@@ -64,4 +70,30 @@ with open(LOG_FILE, "a") as f:
     f.write(f"  Saved selection: {best_config_file}\n")
 
 print("\nOverall best model selection complete.")
+
+# ---------------------------------------------------------------------------
+# Load feature list for the overall best configuration
+# ---------------------------------------------------------------------------
+# This list is imported by step10_reclustering.py to perform clustering on
+# TCGA expression data using only the genes selected for the best performing
+# classification model.
+selected_features_final_combined = []
+try:
+    best_run = int(overall_best_config.get("BestRun"))
+    fsize = int(overall_best_config["FeatureSize"])
+    feature_file = os.path.join(
+        DIRS["results_features"], f"selected_features_f{fsize}_run{best_run}.txt"
+    )
+    if os.path.exists(feature_file):
+        with open(feature_file) as f:
+            selected_features_final_combined = [
+                line.strip() for line in f if line.strip()
+            ]
+        print(
+            f"Loaded {len(selected_features_final_combined)} features from {feature_file}"
+        )
+    else:
+        print(f"Feature file not found: {feature_file}")
+except Exception as e:
+    print(f"Error loading selected features for final configuration: {e}")
 
