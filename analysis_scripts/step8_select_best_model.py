@@ -18,7 +18,18 @@ from step0_setup import (
     P_VALUE_THRESHOLD_CPTAC_RELAXED,
     LOG_FILE,
 )
-from step7_validation_summary import summary_df
+
+# Define the path to the summary table generated in step 7
+summary_table_file = os.path.join(DIRS["results"], "performance_summary_table.csv")
+
+# Ensure the file exists before proceeding
+if not os.path.exists(summary_table_file):
+    raise FileNotFoundError(
+        f"Performance summary table not found at {summary_table_file}. Ensure step 7 ran successfully."
+    )
+
+# Load the summary dataframe from disk
+summary_df = pd.read_csv(summary_table_file)
 
 print("\n--- 8. Selecting Overall Best Model (Combined Criteria) ---")
 
