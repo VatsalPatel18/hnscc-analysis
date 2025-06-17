@@ -18,6 +18,7 @@ def main():
         "analysis_scripts/step3_initial_clustering.py",
         "analysis_scripts/step4_prepare_binary_classification.py",
         "analysis_scripts/step5_classification_loop.py",
+        "analysis_scripts/classification3_5_metrics_plots.py",
         "analysis_scripts/step6_aggregate_visualize.py",
         "analysis_scripts/step7_validation_summary.py",
         "analysis_scripts/step8_select_best_model.py",
