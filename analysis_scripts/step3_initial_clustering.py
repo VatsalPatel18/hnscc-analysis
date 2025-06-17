@@ -57,6 +57,7 @@ try:
     ax.set_title('KMeans Inertia vs k')
     ax.set_xlabel('k'); ax.set_ylabel('Inertia'); ax.grid(True)
     elbow_plot = os.path.join(DIRS['plots_clustering'], 'kmeans_elbow.png')
+    fig.tight_layout()
     fig.savefig(elbow_plot, bbox_inches='tight', dpi=150)
     print(f"Saved KMeans elbow plot to: {elbow_plot}")
 except Exception as e:

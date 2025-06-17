@@ -84,7 +84,7 @@ def plot_mean_roc_feature_grid(out_file, feature_sizes=None, models=None):
     fig.suptitle("Mean ROC Curves \u00b1 Std Dev Across Models for Various Feature Sizes",
                  fontsize=16, y=0.94)
     plt.tight_layout(rect=[0, 0, 1, 0.92])
-    plt.savefig(out_file, dpi=300)
+    plt.savefig(out_file, dpi=150)
     plt.close(fig)
     print(f"Saved ROC grid plot to: {out_file}")
     with open(LOG_FILE, "a") as f:
@@ -109,7 +109,7 @@ def plot_auc_boxplot(out_file):
     plt.ylabel("Test-set AUC")
     plt.legend(title="Model", bbox_to_anchor=(1.05, 1), loc="upper left")
     plt.tight_layout()
-    plt.savefig(out_file, dpi=300)
+    plt.savefig(out_file, dpi=150)
     plt.close()
     print(f"Saved AUC boxplot to: {out_file}")
     with open(LOG_FILE, "a") as f:
@@ -164,8 +164,8 @@ def plot_upset(feature_sets, out_file):
     upset = UpSet(memberships, subset_size='count', show_counts=True, sort_by='degree')
     upset.plot()
     plt.suptitle("Feature Overlap Across Best Model Runs", fontsize=14)
-    plt.savefig(out_file, dpi=300)
     plt.tight_layout()
+    plt.savefig(out_file, dpi=150)
     plt.close()
     print(f"Saved UpSet plot to: {out_file}")
     with open(LOG_FILE, "a") as f:
@@ -188,7 +188,7 @@ def plot_feature_heatmap(feature_sets, out_file):
     plt.xlabel("Feature Size")
     plt.ylabel("Gene")
     plt.tight_layout()
-    plt.savefig(out_file, dpi=300)
+    plt.savefig(out_file, dpi=150)
     plt.close()
     print(f"Saved heatmap to: {out_file}")
     with open(LOG_FILE, "a") as f:
@@ -232,7 +232,7 @@ def plot_feature_frequencies(out_dir):
         ax.set_ylabel("Feature")
         plt.tight_layout()
         out_file = os.path.join(out_dir, f"feature_frequency_f{fsize}.png")
-        plt.savefig(out_file, dpi=300)
+        plt.savefig(out_file, dpi=150)
         plt.close()
         print(f"Saved frequency plot to: {out_file}")
         with open(LOG_FILE, "a") as f:
