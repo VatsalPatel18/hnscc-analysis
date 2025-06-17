@@ -8,6 +8,7 @@ variable when re-clustering using only those genes.
 """
 
 import os
+import pickle
 import pandas as pd
 
 from step0_setup import (
@@ -96,4 +97,35 @@ try:
         print(f"Feature file not found: {feature_file}")
 except Exception as e:
     print(f"Error loading selected features for final configuration: {e}")
+
+# ---------------------------------------------------------------------------
+# Save overall best model with metadata
+# ---------------------------------------------------------------------------
+model_save_path = os.path.join(DIRS["models_classification"], "overall_best_model.pkl")
+try:
+    model_name = overall_best_config["BestModel"]
+    fsize = int(overall_best_config["FeatureSize"])
+    run_id = int(overall_best_config.get("BestRun"))
+    model_file = os.path.join(
+        DIRS["models_classification"], f"{model_name}_f{fsize}_run{run_id}.pkl"
+    )
+    with open(model_file, "rb") as f:
+        loaded_model_data = pickle.load(f)
+    overall_best_model = {
+        "model": loaded_model_data.get("model"),
+        "selector": loaded_model_data.get("selector"),
+        "features": selected_features_final_combined
+        or loaded_model_data.get("features", []),
+        "model_name": model_name,
+        "feature_size": fsize,
+        "run": run_id,
+        "criteria_used": criteria_used,
+    }
+    with open(model_save_path, "wb") as f:
+        pickle.dump(overall_best_model, f)
+    print(f"Saved overall best model pickle to: {model_save_path}")
+    with open(LOG_FILE, "a") as f_log:
+        f_log.write(f"  Saved overall best model: {model_save_path}\n")
+except Exception as e:
+    print(f"Error saving overall best model pickle: {e}")
 
