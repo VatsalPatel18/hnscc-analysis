@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Step 9: Generate final Kaplan-Meier plots."""
+"""Step 9: Generate final Kaplan-Meier plots using the best classifier.
+
+This script loads ``overall_best_model.pkl`` produced by step8_select_best_model
+and applies the saved model and feature list to the TCGA dataset (and CPTAC if
+available) to create final survival curves.
+"""
 
 import os
 import pickle
@@ -20,6 +25,11 @@ except Exception:  # pragma: no cover - used when step7 was not executed
 print("\n--- 9. Final KM Plots (Overall Best Model) ---")
 
 best_model_file = os.path.join(DIRS["models_classification"], "overall_best_model.pkl")
+
+if not os.path.exists(best_model_file):
+    raise RuntimeError(
+        f"Overall best model file not found at {best_model_file}. Run step8_select_best_model first."
+    )
 
 try:
     with open(best_model_file, "rb") as f:
