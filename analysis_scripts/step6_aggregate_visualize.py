@@ -2,12 +2,24 @@
 """Step 6: Aggregate results and generate visualizations."""
 
 import os
+import pickle
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from step0_setup import DIRS, CLASSIFIERS, FEATURE_SIZES, LOG_FILE
-from step5_classification_loop import results_df, roc_data_storage
+
+results_csv = os.path.join(DIRS["results"], "classification_metrics_all_runs.csv")
+roc_data_file = os.path.join(DIRS["results"], "roc_data_all_runs.pkl")
+
+if not os.path.exists(results_csv) or not os.path.exists(roc_data_file):
+    raise RuntimeError(
+        "Required result files not found. Run step5_classification_loop first."
+    )
+
+results_df = pd.read_csv(results_csv)
+with open(roc_data_file, "rb") as f:
+    roc_data_storage = pickle.load(f)
 from step2_helper_functions import plot_roc_curves_all_models
 
 print("\n--- 6. Aggregating and Visualizing Classification Results ---")
