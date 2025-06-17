@@ -2,6 +2,7 @@
 """Step 7: Validate models and create summary tables."""
 
 import os
+import pickle
 import numpy as np
 import pandas as pd
 from lifelines.statistics import logrank_test
