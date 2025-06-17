@@ -1,2 +1,2 @@
 FeatureSize,BestModel,MeanTestAUC_Subset,BestRun,FullTCGA_LogRank_PValue,CPTAC_LogRank_PValue,TCGA_Significant,CPTAC_Significant_Strict,CPTAC_Significant_Relaxed
-15,RandomForest,0.9985,2,0.01153,0.01351,True,True,True
+15,RandomForest,0.9985,2,0.01153,0.03399,True,True,True

@@ -1,7 +1,7 @@
 FeatureSize,BestModel,MeanTestAUC_Subset,BestRun,FullTCGA_LogRank_PValue,CPTAC_LogRank_PValue
 2,LogisticRegression,0.9834,18,0.005811,0.05991
-5,LogisticRegression,0.995,1,0.01636,0.03907
-8,RandomForest,0.9961,3,0.006388,0.1002
-10,SVM,0.9965,3,0.002991,0.03434
-12,RandomForest,0.9973,1,0.006288,0.02293
-15,RandomForest,0.9985,2,0.01153,0.01351
+5,LogisticRegression,0.995,1,0.01636,0.05254
+8,RandomForest,0.9961,3,0.006388,0.0375
+10,SVM,0.9965,3,0.002991,0.01141
+12,RandomForest,0.9973,1,0.006288,0.02473
+15,RandomForest,0.9985,2,0.01153,0.03399
