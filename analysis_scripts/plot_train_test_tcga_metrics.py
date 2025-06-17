@@ -5,8 +5,13 @@ using already-generated results (no changes to existing pipeline files).
 Produces per-model line plots of mean scores and violin plots of run-level distributions.
 """
 import os
+# ensure Matplotlib config dir is writable (avoid fontcache errors on macOS)
+os.environ.setdefault("MPLCONFIGDIR", os.path.join(os.getcwd(), "mplconfig"))
+os.makedirs(os.environ["MPLCONFIGDIR"], exist_ok=True)
 import pandas as pd
 import seaborn as sns
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # Paths to existing results and output directory for plots
@@ -77,6 +82,7 @@ def main():
     )
     for model in dfv["Model"].unique():
         subv = dfv[dfv["Model"] == model]
+        # violin plots of run-level distributions (separate for Train/Test)
         g = sns.catplot(
             data=subv,
             x="Metric",
@@ -89,7 +95,7 @@ def main():
             height=4,
         )
         g.fig.suptitle(f"{model}: Train/Test Metric Distributions by Feature Size", y=1.02)
-        plt.ylim(0, 1)
+        # already set above via catplot axes
         plt.tight_layout()
         fname = os.path.join(OUT_DIR, f"{model}_train_test_violin.png")
         g.savefig(fname, dpi=300)
